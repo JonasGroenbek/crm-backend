@@ -1,0 +1,59 @@
+import { ConfigService, registerAs } from '@nestjs/config';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { APP_DB_RELATIVE_PATH, TSC_DB_RELATIVE_PATH } from './constants';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config();
+
+export const APP_DB_CONFIG: TypeOrmModuleOptions = {
+  type: 'postgres',
+  host: process.env.APP_DB_HOST,
+  port: +process.env.APP_DB_PORT,
+  database: process.env.APP_DB_DATABASE,
+  username: process.env.APP_DB_USER,
+  password: process.env.APP_DB_PASSWORD,
+  entities: ['dist/**/*.entity{.ts,.js}'],
+  schema: 'public',
+  logging: false,
+  synchronize: true,
+  autoLoadEntities: true,
+  migrations: [`${APP_DB_RELATIVE_PATH}/migrations/*{.ts,.js}`],
+  name: 'app',
+};
+
+export const APP_CONFIG = registerAs(
+  'app',
+  (): TypeOrmModuleOptions => APP_DB_CONFIG,
+);
+
+export const appTypeormConfig = (
+  configService: ConfigService,
+): TypeOrmModuleOptions => {
+  return configService.get<TypeOrmModuleOptions>('app');
+};
+
+export const TSC_DB_CONFIG: TypeOrmModuleOptions = {
+  type: 'postgres',
+  host: process.env.TSC_DB_HOST,
+  port: +process.env.TSC_DB_PORT,
+  database: process.env.TSC_DB_DATABASE,
+  username: process.env.TSC_DB_USER,
+  password: process.env.TSC_DB_PASSWORD,
+  entities: ['dist/**/*.entity{.ts,.js}'],
+  schema: 'public',
+  logging: false,
+  synchronize: true,
+  autoLoadEntities: true,
+  migrations: [`${TSC_DB_RELATIVE_PATH}/migrations/*{.ts,.js}`],
+  name: 'tsc',
+};
+
+export const TSC_CONFIG = registerAs(
+  'tsc',
+  (): TypeOrmModuleOptions => TSC_DB_CONFIG,
+);
+
+export const tscTypeormConfig = (
+  configService: ConfigService,
+): TypeOrmModuleOptions => {
+  return configService.get<TypeOrmModuleOptions>('tsc');
+};
