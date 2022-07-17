@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
@@ -9,11 +9,25 @@ import {
   TSC_CONFIG,
   TSC_DB_CONFIG,
 } from './config/typeorm';
-import { Idmodule } from './id/id.module';
+import { ConnectionsModule } from './connections/connections.module';
+import { DealsModule } from './deals/deals.module';
+import { DocumentsModule } from './documents/documents.module';
+import { Idmodule } from './identity/identity.module';
+import { LeadsModule } from './leads/leads.module';
+import { MailsModule } from './mails/mails.module';
+import { SettingsModule } from './settings/settings.module';
+import { TasksModule } from './tasks/tasks.module';
 import { TscModule } from './tsc/tsc.module';
 
 @Module({
   imports: [
+    ConnectionsModule,
+    DealsModule,
+    DocumentsModule,
+    LeadsModule,
+    MailsModule,
+    SettingsModule,
+    TasksModule,
     TscModule,
     Idmodule,
     ConfigModule.forRoot({

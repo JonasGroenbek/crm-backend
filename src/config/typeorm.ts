@@ -48,7 +48,7 @@ export const TSC_DB_CONFIG: TypeOrmModuleOptions = {
 };
 
 export const TSC_CONFIG = registerAs(
-  'tsc',
+  TSC_DB_CONFIG.name,
   (): TypeOrmModuleOptions => TSC_DB_CONFIG,
 );
 
