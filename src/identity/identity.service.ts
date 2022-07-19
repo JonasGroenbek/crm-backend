@@ -9,6 +9,7 @@ import { TSC_DB_CONFIG } from 'src/config/typeorm';
 import { SignUpDTO } from './dto/sign-up.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JWTPayloadDTO } from './dto/jwt-payload.dto';
+import { SALT_ROUNDS } from './constants';
 @Injectable()
 export class IdentityService {
   constructor(
@@ -17,7 +18,7 @@ export class IdentityService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async authenticate({ email, password }: AuthenticateDTO): Promise<Identity> {
+  async login({ email, password }: AuthenticateDTO): Promise<Identity> {
     const identity = await this.identityRepository.findOne({
       where: { email: email.trim().toLowerCase() },
     });
@@ -35,6 +36,10 @@ export class IdentityService {
       );
     }
     return identity;
+  }
+
+  async getById(identityId: number) {
+    return this.identityRepository.findOne({ where: { id: identityId } });
   }
 
   async signToken(userId: number) {
@@ -57,7 +62,8 @@ export class IdentityService {
     }
     const identity = this.identityRepository.create();
     identity.email = email.trim().toLowerCase();
-    identity.password = password.trim();
+    const hash = await bcrypt.hash(password.trim(), SALT_ROUNDS);
+    identity.password = hash;
     return this.identityRepository.save(identity);
   }
 }

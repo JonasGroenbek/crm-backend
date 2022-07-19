@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JWT_CONFIG } from './config/jwt';
 import {
   appTypeormConfig,
   APP_CONFIG,
@@ -34,7 +35,7 @@ import { TscModule } from './tsc/tsc.module';
     IdentityModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [TSC_CONFIG, APP_CONFIG],
+      load: [TSC_CONFIG, APP_CONFIG, JWT_CONFIG],
     }),
     TypeOrmModule.forRootAsync({
       name: APP_DB_CONFIG.name,

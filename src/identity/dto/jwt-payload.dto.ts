@@ -13,6 +13,7 @@ export class JWTPayloadDTO {
   }
 
   protected validate() {
+    console.log('validating');
     const errors = validateSync(this);
     if (errors.length > 0) {
       throw new ResponseException(
