@@ -7,13 +7,17 @@ export class JWTPayloadDTO {
   @IsPositive()
   sub: number; // Subject - userId
 
-  constructor(userId: number) {
+  @IsInt()
+  @IsPositive()
+  tenantId: number; // Subject - userId
+
+  constructor(userId: number, tenantId: number) {
     this.sub = userId;
+    this.tenantId = tenantId;
     this.validate();
   }
 
   protected validate() {
-    console.log('validating');
     const errors = validateSync(this);
     if (errors.length > 0) {
       throw new ResponseException(

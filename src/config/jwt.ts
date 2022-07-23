@@ -4,7 +4,7 @@ interface JwtConfiguration {
   secret: string;
 }
 
-export const JWT_CONFIG = registerAs(
+export const jwtConfig = registerAs(
   'jwt',
   (): JwtConfiguration => ({
     expiresIn: Number(process.env.JWT_EXPIRES),

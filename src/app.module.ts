@@ -2,40 +2,42 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JWT_CONFIG } from './config/jwt';
+import { jwtConfig } from './config/jwt';
 import {
+  appConfig,
   appTypeormConfig,
-  APP_CONFIG,
   APP_DB_CONFIG,
+  tscConfig,
   tscTypeormConfig,
-  TSC_CONFIG,
   TSC_DB_CONFIG,
 } from './config/typeorm';
-import { ConnectionsModule } from './connections/connections.module';
-import { DealsModule } from './deals/deals.module';
-import { DocumentsModule } from './documents/documents.module';
+import { ContactModule } from './contact/contact.module';
+import { DealModule } from './deals/deals.module';
+import { DocumentModule } from './documents/documents.module';
 import { ResponseExceptionFilter } from './filters/response-exception-filter';
 import { IdentityModule } from './identity/identity.module';
-import { LeadsModule } from './leads/leads.module';
-import { MailsModule } from './mails/mails.module';
+import { LeadModule } from './leads/leads.module';
+import { MailModule } from './mails/mails.module';
+import { OrganizationModule } from './organization/organization.module';
 import { SettingsModule } from './settings/settings.module';
-import { TasksModule } from './tasks/tasks.module';
+import { TaskModule } from './tasks/tasks.module';
 import { TscModule } from './tsc/tsc.module';
 
 @Module({
   imports: [
-    ConnectionsModule,
-    DealsModule,
-    DocumentsModule,
-    LeadsModule,
-    MailsModule,
+    OrganizationModule,
+    ContactModule,
+    DealModule,
+    DocumentModule,
+    LeadModule,
+    MailModule,
     SettingsModule,
-    TasksModule,
+    TaskModule,
     TscModule,
     IdentityModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [TSC_CONFIG, APP_CONFIG, JWT_CONFIG],
+      load: [tscConfig, appConfig, jwtConfig],
     }),
     TypeOrmModule.forRootAsync({
       name: APP_DB_CONFIG.name,

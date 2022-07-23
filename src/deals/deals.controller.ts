@@ -4,4 +4,4 @@ import { API_PREFIX } from './constants';
 
 @Controller(API_PREFIX)
 @UseGuards(JwtAuthGuard)
-export class DealsController {}
+export class DealController {}

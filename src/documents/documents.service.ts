@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { APP_DB_CONFIG } from 'src/config/typeorm';
 import { Repository } from 'typeorm';
-import { Documents } from './documents.entity';
+import { Document } from './documents.entity';
 
 @Injectable()
-export class DocumentsService {
+export class DocumentService {
   constructor(
-    @InjectRepository(Documents, APP_DB_CONFIG.name)
-    private readonly documents: Repository<Documents>,
+    @InjectRepository(Document, APP_DB_CONFIG.name)
+    private readonly documents: Repository<Document>,
   ) {}
 }

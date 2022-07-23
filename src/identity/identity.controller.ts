@@ -14,7 +14,6 @@ import { JwtAuthGuard } from './guards/jwt.guard';
 import { LocalAuthGuard } from './guards/local.guard';
 import { Identity } from './identity.entity';
 import { IdentityService } from './identity.service';
-import { JwtStrategy } from './jwt.strategy';
 
 @Controller(API_PREFIX)
 export class IdentityController {
@@ -25,7 +24,7 @@ export class IdentityController {
   async login(@AppendIdentity() identity: Identity) {
     return await {
       identity,
-      jwt: await this.identityService.signToken(identity.id),
+      jwt: await this.identityService.signToken(identity.id, identity.tenantId),
     };
   }
 
@@ -40,7 +39,7 @@ export class IdentityController {
     }
     return {
       identity,
-      jwt: await this.identityService.signToken(identity.id),
+      jwt: await this.identityService.signToken(identity.id, identity.tenantId),
     };
   }
 
@@ -49,7 +48,7 @@ export class IdentityController {
     const identity = await this.identityService.createIdentity(body);
     return {
       identity,
-      jwt: await this.identityService.signToken(identity.id),
+      jwt: await this.identityService.signToken(identity.id, identity.tenantId),
     };
   }
 }

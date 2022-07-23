@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_DB_CONFIG } from 'src/config/typeorm';
-import { TasksController } from './tasks.controller';
-import { Tasks } from './tasks.entity';
-import { TasksService } from './tasks.service';
+import { TaskController } from './tasks.controller';
+import { Task } from './tasks.entity';
+import { TaskService } from './tasks.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Tasks], APP_DB_CONFIG.name)],
-  controllers: [TasksController],
-  providers: [TasksService],
-  exports: [TasksService],
+  imports: [TypeOrmModule.forFeature([Task], APP_DB_CONFIG.name)],
+  controllers: [TaskController],
+  providers: [TaskService],
+  exports: [TaskService],
 })
-export class TasksModule {}
+export class TaskModule {}

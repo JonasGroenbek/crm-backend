@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_DB_CONFIG } from 'src/config/typeorm';
-import { DocumentsController } from './documents.controller';
-import { Documents } from './documents.entity';
-import { DocumentsService } from './documents.service';
+import { DocumentController } from './documents.controller';
+import { Document } from './documents.entity';
+import { DocumentService } from './documents.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Documents], APP_DB_CONFIG.name)],
-  controllers: [DocumentsController],
-  providers: [DocumentsService],
-  exports: [DocumentsService],
+  imports: [TypeOrmModule.forFeature([Document], APP_DB_CONFIG.name)],
+  controllers: [DocumentController],
+  providers: [DocumentService],
+  exports: [DocumentService],
 })
-export class DocumentsModule {}
+export class DocumentModule {}
