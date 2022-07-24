@@ -1,6 +1,8 @@
 import {
   Controller,
   Get,
+  Param,
+  ParseIntPipe,
   Query,
   UseGuards,
   ValidationPipe,
@@ -26,5 +28,11 @@ export class SubscriptionController {
     query: GetManySubscriptionDto,
   ) {
     return this.subscriptionService.getMany(query);
+  }
+
+  @Get(`:id`)
+  @UseGuards(JwtAuthGuard)
+  getById(@Param('id', ParseIntPipe) id: number) {
+    return this.subscriptionService.getById(id);
   }
 }

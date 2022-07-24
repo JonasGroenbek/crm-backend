@@ -12,6 +12,10 @@ export class DealService {
     private readonly dealRepository: Repository<Deal>,
   ) {}
 
+  async getById(id: number) {
+    return this.dealRepository.findOne({ where: { id } });
+  }
+
   async getMany({
     limit = 50,
     offset = 0,

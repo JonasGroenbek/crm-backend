@@ -12,6 +12,10 @@ export class DocumentService {
     private readonly documentsRepository: Repository<Document>,
   ) {}
 
+  async getById(id: number) {
+    return this.documentsRepository.findOne({ where: { id } });
+  }
+
   async getMany({
     limit = 50,
     offset = 0,

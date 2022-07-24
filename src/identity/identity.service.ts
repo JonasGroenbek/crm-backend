@@ -45,8 +45,8 @@ export class IdentityService {
     return identity;
   }
 
-  async getById(identityId: number) {
-    return this.identityRepository.findOne({ where: { id: identityId } });
+  async getById(id: number) {
+    return this.identityRepository.findOne({ where: { id } });
   }
 
   async getMany({
@@ -88,18 +88,24 @@ export class IdentityService {
             HttpStatus.CONFLICT,
           );
         }
+        //create tenant
         const tenantEntity = tenantRepository.create();
         tenantEntity.trialPeriodEnd = moment().add(14, 'days').toDate();
         const tenant = await tenantRepository.save(tenantEntity);
+
+        //create identity
         const identityEntity = identityRepository.create();
         identityEntity.tenantId = tenant.id;
         identityEntity.email = email.trim().toLowerCase();
         const hash = await bcrypt.hash(password.trim(), SALT_ROUNDS);
         identityEntity.password = hash;
         const identity = await identityRepository.save(identityEntity);
+
+        //create stripe customer
         await this.stripeCustomerService.createCustomer({
           email: identity.email,
         });
+
         return identity;
       },
     );

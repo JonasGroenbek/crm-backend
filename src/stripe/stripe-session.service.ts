@@ -3,56 +3,54 @@ import { Injectable } from '@nestjs/common';
 import { catchError, firstValueFrom, retryWhen } from 'rxjs';
 import { errorCatcher } from 'src/observables/error-catcher';
 import { retry } from 'src/observables/http-retry';
-import { DeleteProductResponseDto } from './dto/delete-product-response.dto';
-import { ProductResponseDto } from './dto/product-response.dto';
+import { CreateSessionRequestDto } from './dto/create-session-request.dto';
+import { SessionResponseDto } from './dto/session-response.dto';
+import Stripe from 'stripe';
 
 @Injectable()
-export class StripeProductService {
+export class StripeSessionService {
   constructor(private readonly stripeHttpService: HttpService) {
-    this.getProducts().then((res) => {
-      console.log(res);
-    });
+    const stripeClient = new Stripe(
+      `sk_test_51LOdXVFGKuF18j39m97aHHh93sEGudR4KYKkyKGuyRzRnDeIzp36lqOtQxkqUedlOmvgqvyQlnoOSTlGi9PBYR5V00yFuoIPZ7`,
+      {
+        apiVersion: '2020-08-27',
+        typescript: true,
+      },
+    );
   }
 
-  async createProduct(dto: ProductResponseDto): Promise<ProductResponseDto> {
+  async createSession(
+    dto: CreateSessionRequestDto,
+  ): Promise<SessionResponseDto> {
     const observable = await this.stripeHttpService
-      .post<ProductResponseDto>(`products`, dto)
+      .post<SessionResponseDto>(`sessions`, dto)
       .pipe(retryWhen(retry()), catchError(errorCatcher));
 
     const response = await firstValueFrom(observable);
     return response?.data;
   }
 
-  async getProductById(id: string): Promise<ProductResponseDto> {
+  async getSessionById(id: string): Promise<SessionResponseDto> {
     const observable = await this.stripeHttpService
-      .post<ProductResponseDto>(`products/${id}`)
+      .post<SessionResponseDto>(`sessions/${id}`)
       .pipe(retryWhen(retry()), catchError(errorCatcher));
 
     const response = await firstValueFrom(observable);
     return response?.data;
   }
 
-  async deleteProductById(id: string): Promise<DeleteProductResponseDto> {
+  async getSessions(): Promise<SessionResponseDto[]> {
     const observable = await this.stripeHttpService
-      .delete<DeleteProductResponseDto>(`products/${id}`)
+      .get<SessionResponseDto[]>('sessions')
       .pipe(retryWhen(retry()), catchError(errorCatcher));
 
     const response = await firstValueFrom(observable);
     return response?.data;
   }
 
-  async getProducts(): Promise<ProductResponseDto[]> {
+  async getSessionsSearch(query: string): Promise<SessionResponseDto[]> {
     const observable = await this.stripeHttpService
-      .get<ProductResponseDto[]>('products')
-      .pipe(retryWhen(retry()), catchError(errorCatcher));
-
-    const response = await firstValueFrom(observable);
-    return response?.data;
-  }
-
-  async getProductsSearch(query: string): Promise<ProductResponseDto[]> {
-    const observable = await this.stripeHttpService
-      .get<ProductResponseDto[]>(`products${query}`)
+      .get<SessionResponseDto[]>(`sessions${query}`)
       .pipe(retryWhen(retry()), catchError(errorCatcher));
 
     const response = await firstValueFrom(observable);

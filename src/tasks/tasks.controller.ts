@@ -1,6 +1,8 @@
 import {
   Controller,
   Get,
+  Param,
+  ParseIntPipe,
   Query,
   UseGuards,
   ValidationPipe,
@@ -26,5 +28,11 @@ export class TaskController {
     query: GetManyTaskDto,
   ) {
     return this.taskService.getMany(query);
+  }
+
+  @Get(`:id`)
+  @UseGuards(JwtAuthGuard)
+  getById(@Param('id', ParseIntPipe) id: number) {
+    return this.taskService.getById(id);
   }
 }

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { catchError, firstValueFrom, retryWhen } from 'rxjs';
 import { errorCatcher } from 'src/observables/error-catcher';
 import { retry } from 'src/observables/http-retry';
-import { deleteSubscriptionResponseDto } from './dto/delete-subscription-response.dto';
+import { DeleteSubscriptionResponseDto } from './dto/delete-subscription-response.dto';
 import { SubscriptionResponseDto } from './dto/subscription-response.dto';
 
 @Injectable()
@@ -36,9 +36,9 @@ export class StripeSubscriptionService {
 
   async deleteSubscriptionById(
     id: string,
-  ): Promise<deleteSubscriptionResponseDto> {
+  ): Promise<DeleteSubscriptionResponseDto> {
     const observable = await this.stripeHttpService
-      .delete<deleteSubscriptionResponseDto>(`subscriptions/${id}`)
+      .delete<DeleteSubscriptionResponseDto>(`subscriptions/${id}`)
       .pipe(retryWhen(retry()), catchError(errorCatcher));
 
     const response = await firstValueFrom(observable);

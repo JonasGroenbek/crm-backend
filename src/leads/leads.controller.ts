@@ -1,6 +1,8 @@
 import {
   Controller,
   Get,
+  Param,
+  ParseIntPipe,
   Query,
   UseGuards,
   ValidationPipe,
@@ -26,5 +28,11 @@ export class LeadController {
     query: GetManyLeadDto,
   ) {
     return this.leadService.getMany(query);
+  }
+
+  @Get(`:id`)
+  @UseGuards(JwtAuthGuard)
+  getById(@Param('id', ParseIntPipe) id: number) {
+    return this.leadService.getById(id);
   }
 }

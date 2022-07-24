@@ -12,6 +12,10 @@ export class TaskService {
     private readonly taskRepository: Repository<Task>,
   ) {}
 
+  async getById(id: number) {
+    return this.taskRepository.findOne({ where: { id } });
+  }
+
   async getMany({
     limit = 50,
     offset = 0,

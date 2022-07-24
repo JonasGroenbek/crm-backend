@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
+  ParseIntPipe,
   Post,
   Query,
   UseGuards,
@@ -67,5 +69,11 @@ export class IdentityController {
       identity,
       jwt: await this.identityService.signToken(identity.id, identity.tenantId),
     };
+  }
+
+  @Get(`:id`)
+  @UseGuards(JwtAuthGuard)
+  getById(@Param('id', ParseIntPipe) id: number) {
+    return this.identityService.getById(id);
   }
 }

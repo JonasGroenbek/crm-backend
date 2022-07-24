@@ -3,55 +3,43 @@ import { Injectable } from '@nestjs/common';
 import { catchError, firstValueFrom, retryWhen } from 'rxjs';
 import { errorCatcher } from 'src/observables/error-catcher';
 import { retry } from 'src/observables/http-retry';
-import { CreateCustomerRequestDto } from './dto/create-customer-request.dto';
-import { CustomerResponseDto } from './dto/customer-response.dto';
-import { DeleteCustomerResponseDto } from './dto/delete-customer-response.dto';
+import { PriceResponseDto } from './dto/price-response.dto';
+import { CreatePriceRequestDto } from './dto/create-price-request.dto';
 
 @Injectable()
-export class StripeCustomerService {
+export class StripePriceService {
   constructor(private readonly stripeHttpService: HttpService) {}
 
-  async createCustomer(
-    dto: CreateCustomerRequestDto,
-  ): Promise<CustomerResponseDto> {
+  async createPrice(dto: CreatePriceRequestDto): Promise<PriceResponseDto> {
     const observable = await this.stripeHttpService
-      .post<CustomerResponseDto>(`customers`, dto)
+      .post<PriceResponseDto>(`prices`, dto)
       .pipe(retryWhen(retry()), catchError(errorCatcher));
 
     const response = await firstValueFrom(observable);
     return response?.data;
   }
 
-  async getCustomerById(id: string): Promise<CustomerResponseDto> {
+  async getPriceById(id: string): Promise<PriceResponseDto> {
     const observable = await this.stripeHttpService
-      .post<CustomerResponseDto>(`customers/${id}`)
+      .post<PriceResponseDto>(`prices/${id}`)
       .pipe(retryWhen(retry()), catchError(errorCatcher));
 
     const response = await firstValueFrom(observable);
     return response?.data;
   }
 
-  async deleteCustomerById(id: string): Promise<DeleteCustomerResponseDto> {
+  async getPrices(): Promise<PriceResponseDto[]> {
     const observable = await this.stripeHttpService
-      .delete<DeleteCustomerResponseDto>(`customers/${id}`)
+      .get<PriceResponseDto[]>('prices')
       .pipe(retryWhen(retry()), catchError(errorCatcher));
 
     const response = await firstValueFrom(observable);
     return response?.data;
   }
 
-  async getCustomers(): Promise<CustomerResponseDto[]> {
+  async getPricesSearch(query: string): Promise<PriceResponseDto[]> {
     const observable = await this.stripeHttpService
-      .get<CustomerResponseDto[]>('customers')
-      .pipe(retryWhen(retry()), catchError(errorCatcher));
-
-    const response = await firstValueFrom(observable);
-    return response?.data;
-  }
-
-  async getCustomersSearch(query: string): Promise<CustomerResponseDto[]> {
-    const observable = await this.stripeHttpService
-      .get<CustomerResponseDto[]>(`customers${query}`)
+      .get<PriceResponseDto[]>(`prices${query}`)
       .pipe(retryWhen(retry()), catchError(errorCatcher));
 
     const response = await firstValueFrom(observable);

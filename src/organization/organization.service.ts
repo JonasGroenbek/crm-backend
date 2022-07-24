@@ -12,6 +12,10 @@ export class OrganizationService {
     private readonly organizationRepository: Repository<Organization>,
   ) {}
 
+  async getById(id: number) {
+    return this.organizationRepository.findOne({ where: { id } });
+  }
+
   async getMany({ limit = 50, offset = 0 }: GetManyOrganizationsDto): Promise<{
     count: number;
     organizations: Organization[];

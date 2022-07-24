@@ -1,6 +1,8 @@
 import {
   Controller,
   Get,
+  Param,
+  ParseIntPipe,
   Query,
   UseGuards,
   ValidationPipe,
@@ -27,5 +29,11 @@ export class OrganizationController {
     query: GetManyOrganizationsDto,
   ) {
     return this.organizationService.getMany(query);
+  }
+
+  @Get(`:id`)
+  @UseGuards(JwtAuthGuard)
+  getById(@Param('id', ParseIntPipe) id: number) {
+    return this.organizationService.getById(id);
   }
 }

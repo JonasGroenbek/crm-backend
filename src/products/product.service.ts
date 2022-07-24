@@ -12,6 +12,10 @@ export class ProductService {
     private readonly leadRepository: Repository<Product>,
   ) {}
 
+  async getById(id: number) {
+    return this.leadRepository.findOne({ where: { id } });
+  }
+
   async getMany({
     limit = 50,
     offset = 0,

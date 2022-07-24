@@ -9,23 +9,28 @@ import { Subscription } from './subscription.entity';
 export class SubscriptionService {
   constructor(
     @InjectRepository(Subscription, APP_DB_CONFIG.name)
-    private readonly leadRepository: Repository<Subscription>,
+    private readonly subscriptionRepository: Repository<Subscription>,
   ) {}
+
+  async getById(id: number) {
+    return this.subscriptionRepository.findOne({ where: { id } });
+  }
 
   async getMany({ limit = 50, offset = 0 }: GetManySubscriptionDto): Promise<{
     count: number;
-    leads: Subscription[];
+    subscriptions: Subscription[];
   }> {
-    const query = this.leadRepository.createQueryBuilder('subscription');
+    const query =
+      this.subscriptionRepository.createQueryBuilder('subscription');
 
     query.skip(offset);
     query.take(limit);
 
-    const [leads, count] = await query.getManyAndCount();
+    const [subscriptions, count] = await query.getManyAndCount();
 
     return {
       count: count,
-      leads: leads,
+      subscriptions,
     };
   }
 }

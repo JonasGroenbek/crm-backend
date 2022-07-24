@@ -1,4 +1,4 @@
-export interface deleteCustomerResponseDto {
+export interface DeleteCustomerResponseDto {
   id: string;
   object: string;
   deleted: boolean;

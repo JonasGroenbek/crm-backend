@@ -12,6 +12,10 @@ export class ContactService {
     private readonly contactRepository: Repository<Contact>,
   ) {}
 
+  async getById(id: number) {
+    return this.contactRepository.findOne({ where: { id } });
+  }
+
   async getMany({
     limit = 50,
     offset = 0,
