@@ -28,6 +28,9 @@ export class Tenant extends DefaultFields {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ type: 'varchar', name: 'customer_id', nullable: true })
+  customerId: string;
+
   @Column({ type: 'int', name: 'subscription_id', nullable: true })
   subscriptionId: number;
 

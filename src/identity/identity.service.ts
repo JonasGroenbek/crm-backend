@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
@@ -12,16 +12,17 @@ import { JWTPayloadDto } from './dto/jwt-payload.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { Identity } from './identity.entity';
 import * as moment from 'moment';
-import { StripeCustomerService } from 'src/stripe/stripe-customer.service';
 import { GetManyIdentitiesDto } from './dto/get-many.dto';
+import { StripeService } from 'src/stripe/stripe-service';
+import Stripe from 'stripe';
 
 @Injectable()
 export class IdentityService {
   constructor(
     @InjectRepository(Identity, APP_DB_CONFIG.name)
     private readonly identityRepository: Repository<Identity>,
+    private readonly stripeService: StripeService,
     private readonly jwtService: JwtService,
-    private readonly stripeCustomerService: StripeCustomerService,
   ) {}
 
   async login({ email, password }: AuthenticateDto): Promise<Identity> {
@@ -75,39 +76,54 @@ export class IdentityService {
   }
 
   async createIdentity({ email, password }: SignUpDto) {
-    return this.identityRepository.manager.transaction(
-      async (transaction: EntityManager) => {
-        const identityRepository = transaction.getRepository(Identity);
-        const tenantRepository = transaction.getRepository(Tenant);
-        const confictingIdentity = await this.identityRepository.findOne({
-          where: { email },
-        });
-        if (confictingIdentity) {
-          throw new ResponseException(
-            'The identity already exists',
-            HttpStatus.CONFLICT,
-          );
-        }
-        //create tenant
-        const tenantEntity = tenantRepository.create();
-        tenantEntity.trialPeriodEnd = moment().add(14, 'days').toDate();
-        const tenant = await tenantRepository.save(tenantEntity);
+    let customer: Stripe.Response<Stripe.Customer>;
+    try {
+      return this.identityRepository.manager.transaction(
+        async (transaction: EntityManager) => {
+          const identityRepository = transaction.getRepository(Identity);
+          const tenantRepository = transaction.getRepository(Tenant);
+          const confictingIdentity = await this.identityRepository.findOne({
+            where: { email },
+          });
+          if (confictingIdentity) {
+            throw new ResponseException(
+              'The identity already exists',
+              HttpStatus.CONFLICT,
+            );
+          }
+          //create tenant
+          const tenantEntity = tenantRepository.create();
+          tenantEntity.trialPeriodEnd = moment().add(14, 'days').toDate();
+          const tenant = await tenantRepository.save(tenantEntity);
 
-        //create identity
-        const identityEntity = identityRepository.create();
-        identityEntity.tenantId = tenant.id;
-        identityEntity.email = email.trim().toLowerCase();
-        const hash = await bcrypt.hash(password.trim(), SALT_ROUNDS);
-        identityEntity.password = hash;
-        const identity = await identityRepository.save(identityEntity);
+          //create identity
+          const identityEntity = identityRepository.create();
+          identityEntity.tenantId = tenant.id;
+          identityEntity.email = email.trim().toLowerCase();
+          const hash = await bcrypt.hash(password.trim(), SALT_ROUNDS);
+          identityEntity.password = hash;
+          const identity = await identityRepository.save(identityEntity);
 
-        //create stripe customer
-        await this.stripeCustomerService.createCustomer({
-          email: identity.email,
-        });
+          customer = await this.stripeService.stripe.customers.create({
+            email: identity.email,
+          });
 
-        return identity;
-      },
-    );
+          await tenantRepository.update(tenant.id, { customerId: customer.id });
+
+          return identity;
+        },
+      );
+    } catch (e) {
+      if (customer) {
+        this.stripeService.stripe.customers.del(customer.id);
+      }
+      if (e instanceof ResponseException) {
+        throw e;
+      }
+      throw new ResponseException(
+        e?.message || 'Something went wrong',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
