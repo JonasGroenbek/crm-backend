@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import { IsInt, IsPositive, validateSync } from 'class-validator';
 import { ResponseException } from 'src/exceptions/response-exception';
 
-export class JWTPayloadDTO {
+export class JWTPayloadDto {
   @IsInt()
   @IsPositive()
   sub: number; // Subject - userId

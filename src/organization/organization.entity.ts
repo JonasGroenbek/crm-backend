@@ -1,7 +1,8 @@
-import { APP_DB_CONFIG } from 'src/config/typeorm';
+import { APP_DB_CONFIG } from 'src/config/typeorm.config';
 import { Contact } from 'src/contact/contact.entity';
 import { Identity } from 'src/identity/identity.entity';
 import { Tenant } from 'src/tenant/tenant.entity';
+import { DefaultFields } from 'src/typeorm/entities/default-fields.entity';
 import {
   Column,
   Entity,
@@ -16,7 +17,7 @@ import {
   schema: 'public',
   name: 'organization',
 })
-export class Organization {
+export class Organization extends DefaultFields {
   @PrimaryGeneratedColumn()
   id: number;
 

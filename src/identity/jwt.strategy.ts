@@ -5,7 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ResponseException } from 'src/exceptions/response-exception';
 import { Tenant } from 'src/tenant/tenant.entity';
 import { TenantService } from 'src/tenant/tenant.service';
-import { JWTPayloadDTO } from './dto/jwt-payload.dto';
+import { JWTPayloadDto } from './dto/jwt-payload.dto';
 import { Identity } from './identity.entity';
 import { IdentityService } from './identity.service';
 
@@ -29,13 +29,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(
-    payload: JWTPayloadDTO,
-    done: (
-      error: Error,
-      identity: Identity,
-      tenant: Tenant,
-      something: any,
-    ) => void,
+    payload: JWTPayloadDto,
+    done: (error: Error, identity: Identity, tenant: Tenant) => void,
   ) {
     if (!payload) {
       return (
@@ -71,6 +66,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         null
       );
     }
-    return done(null, identity, tenant, { something: 'LETS GO' });
+
+    return done(null, identity, tenant);
   }
 }

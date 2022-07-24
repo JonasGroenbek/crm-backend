@@ -1,1 +1,1 @@
-export const API_PREFIX = 'orginazations';
+export const API_PREFIX = 'organizations';

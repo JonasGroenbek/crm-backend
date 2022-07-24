@@ -1,4 +1,4 @@
-import { APP_DB_CONFIG } from 'src/config/typeorm';
+import { APP_DB_CONFIG } from 'src/config/typeorm.config';
 import { Contact } from 'src/contact/contact.entity';
 import { Deal } from 'src/deals/deals.entity';
 import { Document } from 'src/documents/documents.entity';
@@ -7,6 +7,7 @@ import { Mail } from 'src/mails/mails.entity';
 import { Organization } from 'src/organization/organization.entity';
 import { Task } from 'src/tasks/tasks.entity';
 import { Tenant } from 'src/tenant/tenant.entity';
+import { DefaultFields } from 'src/typeorm/entities/default-fields.entity';
 import {
   Column,
   Entity,
@@ -16,10 +17,24 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+export enum Role {
+  Admin = 'Admin',
+  Sales = 'Sales',
+}
+
 @Entity({ database: APP_DB_CONFIG.name, schema: 'public', name: 'identity' })
-export class Identity {
+export class Identity extends DefaultFields {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({
+    name: 'role',
+    type: 'enum',
+    enum: Role,
+    nullable: false,
+    default: Role.Sales,
+  })
+  role: Role;
 
   @Column({ name: 'email', type: 'varchar' })
   email: string;

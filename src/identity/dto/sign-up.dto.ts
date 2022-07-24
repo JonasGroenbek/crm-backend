@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 
 @Exclude()
-export class SignUpDTO {
+export class SignUpDto {
   @ApiProperty({ required: true })
   @Expose()
   @IsString()

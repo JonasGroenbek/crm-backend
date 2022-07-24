@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { APP_DB_CONFIG } from 'src/config/typeorm';
+import { APP_DB_CONFIG } from 'src/config/typeorm.config';
+import { StripeModule } from 'src/stripe/stripe.module';
 import { Tenant } from 'src/tenant/tenant.entity';
 import { TenantModule } from 'src/tenant/tenant.module';
 import { IdentityController } from './identity.controller';
@@ -15,6 +16,7 @@ import { LocalStrategy } from './local.strategy';
   imports: [
     TypeOrmModule.forFeature([Identity, Tenant], APP_DB_CONFIG.name),
     TenantModule,
+    StripeModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

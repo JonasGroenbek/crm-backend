@@ -1,6 +1,7 @@
-import { APP_DB_CONFIG } from 'src/config/typeorm';
+import { APP_DB_CONFIG } from 'src/config/typeorm.config';
 import { Identity } from 'src/identity/identity.entity';
 import { Tenant } from 'src/tenant/tenant.entity';
+import { DefaultFields } from 'src/typeorm/entities/default-fields.entity';
 import {
   Column,
   Entity,
@@ -10,7 +11,7 @@ import {
 } from 'typeorm';
 
 @Entity({ database: APP_DB_CONFIG.name, schema: 'public', name: 'document' })
-export class Document {
+export class Document extends DefaultFields {
   @PrimaryGeneratedColumn()
   id: number;
 

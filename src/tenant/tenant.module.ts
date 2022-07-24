@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { APP_DB_CONFIG } from 'src/config/typeorm';
+import { APP_DB_CONFIG } from 'src/config/typeorm.config';
 import { TenantController } from './tenant.controller';
 import { Tenant } from './tenant.entity';
 import { TenantService } from './tenant.service';

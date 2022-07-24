@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/identity/guards/jwt.guard';
 import { API_PREFIX } from './constants';
-import { GetManyLeadDTO } from './dto/get-many.dto';
+import { GetManyLeadDto } from './dto/get-many.dto';
 import { LeadService } from './leads.service';
 
 @Controller(API_PREFIX)
@@ -19,11 +19,11 @@ export class LeadController {
   getMany(
     @Query(
       new ValidationPipe({
-        expectedType: GetManyLeadDTO,
+        expectedType: GetManyLeadDto,
         transform: true,
       }),
     )
-    query: GetManyLeadDTO,
+    query: GetManyLeadDto,
   ) {
     return this.leadService.getMany(query);
   }

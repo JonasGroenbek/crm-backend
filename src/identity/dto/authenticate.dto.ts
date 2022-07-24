@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 
 @Exclude()
-export class AuthenticateDTO {
+export class AuthenticateDto {
   @ApiProperty({ required: true })
   @Expose()
   @IsString()

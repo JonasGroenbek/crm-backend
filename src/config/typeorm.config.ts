@@ -14,7 +14,7 @@ export const APP_DB_CONFIG: TypeOrmModuleOptions = {
   password: process.env.APP_DB_PASSWORD,
   entities: ['dist/**/*.entity{.ts,.js}'],
   schema: 'public',
-  logging: true,
+  logging: false,
   synchronize: true,
   autoLoadEntities: true,
   migrations: [`${APP_DB_RELATIVE_PATH}/migrations/*{.ts,.js}`],

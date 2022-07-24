@@ -3,7 +3,7 @@ import { Exclude, Expose, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Exclude()
-export class GetManyOrganizationsDTO {
+export class GetManyOrganizationsDto {
   @ApiProperty({ required: false })
   @Expose()
   @IsOptional()

@@ -1,7 +1,8 @@
-import { APP_DB_CONFIG } from 'src/config/typeorm';
+import { APP_DB_CONFIG } from 'src/config/typeorm.config';
 import { Identity } from 'src/identity/identity.entity';
 import { Organization } from 'src/organization/organization.entity';
 import { Tenant } from 'src/tenant/tenant.entity';
+import { DefaultFields } from 'src/typeorm/entities/default-fields.entity';
 import {
   Column,
   Entity,
@@ -13,7 +14,7 @@ import {
 enum ContactType {}
 
 @Entity({ database: APP_DB_CONFIG.name, schema: 'public', name: 'contact' })
-export class Contact {
+export class Contact extends DefaultFields {
   @PrimaryGeneratedColumn()
   id: number;
 
